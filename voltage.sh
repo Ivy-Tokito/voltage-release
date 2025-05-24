@@ -34,8 +34,8 @@ fi
 
 # Repo Clone
 mkdir voltageos && cd voltageos && git-lfs install
-yes | repo init -u https://github.com/VoltageOS/manifest.git -b 15 --git-lfs
-git clone https://github.com/Kurumi-Tokito/munch_manifest -b voltage-15 .repo/local_manifests
+yes | repo init -u https://github.com/VoltageOS/manifest.git -b 15-qpr2 --git-lfs
+git clone https://github.com/Tokito-to/munch_manifest -b voltage-15 .repo/local_manifests
 git clone https://$GITPASS@github.com/Kurumi-Tokito/Private_keys.git -b voltage-15 private-keys
 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
@@ -47,6 +47,6 @@ ccache -M 20G
 
 sudo mount -o remount,size=32G /tmp #increase /tmp space to 32G #to avoid no space in /tmp error
 
-. build/envsetup.sh && brunch voltage_munch-ap3a-user
+. build/envsetup.sh && brunch voltage_munch-bp1a-user
 
 #prebuilts/jdk/jdk17/linux-x86/bin/java -Xmx2048m -Djava.library.path="out/host/linux-x86/lib64" -jar out/host/linux-x86/framework/signapk.jar  keys/releasekey.x509.pem keys/releasekey.pk8 out/input.apk out/signed.apk

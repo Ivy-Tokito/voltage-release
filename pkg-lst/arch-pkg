@@ -15,7 +15,6 @@ zip
 unzip
 curl
 zlib
-openssh
 openssl
 glibc
 libnl

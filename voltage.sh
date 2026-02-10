@@ -2,7 +2,7 @@
 
 set -e
 
-GITPASS="" # Git Token
+GITPASS=""                    # Git Token
 CC_DIR="$(pwd -P)/../.ccache" # CCache Path
 
 if [ $(command -v apt) ]; then
@@ -10,7 +10,7 @@ if [ $(command -v apt) ]; then
     sudo apt-get install git-core git-lfs jq rsync python3 gnupg ccache aarch64-linux-gnu-gcc flex bison build-essential zip curl zlib1g-dev libssl-dev libc6-dev-i386 libncurses5 x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig -y
     sudo ln -s /usr/bin/python3 /usr/bin/python
 elif [ $(command -v pacman) ]; then
-    sudo pacman -Sy --needed --noconfirm -< arch-pkg
+    sudo pacman -Sy --needed --noconfirm - <arch-pkg
 fi
 
 if [ ! $(command -v repo) ]; then
@@ -21,7 +21,7 @@ elif [ -f ~/.bin/repo ]; then
     export PATH="${HOME}/.bin:${PATH}"
 else
     mkdir -p ~/.bin
-    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+    curl https://storage.googleapis.com/git-repo-downloads/repo >~/.bin/repo
     chmod a+rx ~/.bin/repo
     export PATH="${HOME}/.bin:${PATH}"
 fi
@@ -34,10 +34,16 @@ fi
 
 # Repo Clone
 mkdir voltageos && cd voltageos && git-lfs install
-yes | repo init -u https://github.com/VoltageOS/manifest.git -b 15-qpr2 --git-lfs
-git clone https://github.com/Tokito-to/munch_manifest -b voltage-15 .repo/local_manifests
-git clone https://$GITPASS@github.com/Kurumi-Tokito/Private_keys.git -b voltage-15 private-keys
+yes | repo init -u https://github.com/VoltageOS/manifest.git -b 16.2 --git-lfs
 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+
+git clone https://github.com/GuidixX/device_xiaomi_peridot.git -b 16.2 device/xiaomi/peridot
+git clone https://github.com/GuidixX/vendor_xiaomi_peridot.git -b 16.2 vendor/xiaomi/peridot
+git clone https://github.com/GuidixX/packages_apps_XiaomiParts.git -b 16.2 packages/apps/XiaomiParts
+git clone https://github.com/GuidixX/packages_apps_ViPER4AndroidFX.git packages/apps/ViPER4AndroidFX
+git clone https://github.com/GuidixX/kernel_xiaomi_sm8635.git -b 16.2 kernel/xiaomi/sm8635
+git clone https://github.com/GuidixX/kernel_xiaomi_sm8635-modules.git -b 16.2 kernel/xiaomi/sm8635-modules
+git clone https://github.com/GuidixX/kernel_xiaomi_sm8635-devicetrees.git -b 16.2 kernel/xiaomi/sm8635-devicetrees
 
 # Build
 export BUILD_USERNAME=Tokito
@@ -47,6 +53,6 @@ ccache -M 20G
 
 sudo mount -o remount,size=32G /tmp #increase /tmp space to 32G #to avoid no space in /tmp error
 
-. build/envsetup.sh && brunch voltage_munch-bp1a-user
+. build/envsetup.sh && brunch voltage_munch-bp2a-user
 
 #prebuilts/jdk/jdk17/linux-x86/bin/java -Xmx2048m -Djava.library.path="out/host/linux-x86/lib64" -jar out/host/linux-x86/framework/signapk.jar  keys/releasekey.x509.pem keys/releasekey.pk8 out/input.apk out/signed.apk

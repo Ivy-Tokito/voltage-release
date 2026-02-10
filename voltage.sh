@@ -2,7 +2,6 @@
 
 set -e
 
-GITPASS=""                    # Git Token
 CC_DIR="$(pwd -P)/../.ccache" # CCache Path
 
 if [ $(command -v apt) ]; then
@@ -10,7 +9,7 @@ if [ $(command -v apt) ]; then
     sudo apt-get install git-core git-lfs jq rsync python3 gnupg ccache aarch64-linux-gnu-gcc flex bison build-essential zip curl zlib1g-dev libssl-dev libc6-dev-i386 libncurses5 x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig -y
     sudo ln -s /usr/bin/python3 /usr/bin/python
 elif [ $(command -v pacman) ]; then
-    sudo pacman -Sy --needed --noconfirm - <arch-pkg
+    sudo pacman -Sy --needed --noconfirm - < arch-pkg
 fi
 
 if [ ! $(command -v repo) ]; then
@@ -21,7 +20,7 @@ elif [ -f ~/.bin/repo ]; then
     export PATH="${HOME}/.bin:${PATH}"
 else
     mkdir -p ~/.bin
-    curl https://storage.googleapis.com/git-repo-downloads/repo >~/.bin/repo
+    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
     chmod a+rx ~/.bin/repo
     export PATH="${HOME}/.bin:${PATH}"
 fi
@@ -37,13 +36,15 @@ mkdir voltageos && cd voltageos && git-lfs install
 yes | repo init -u https://github.com/VoltageOS/manifest.git -b 16.2 --git-lfs
 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-git clone https://github.com/GuidixX/device_xiaomi_peridot.git -b 16.2 device/xiaomi/peridot
-git clone https://github.com/GuidixX/vendor_xiaomi_peridot.git -b 16.2 vendor/xiaomi/peridot
-git clone https://github.com/GuidixX/packages_apps_XiaomiParts.git -b 16.2 packages/apps/XiaomiParts
-git clone https://github.com/GuidixX/packages_apps_ViPER4AndroidFX.git packages/apps/ViPER4AndroidFX
-git clone https://github.com/GuidixX/kernel_xiaomi_sm8635.git -b 16.2 kernel/xiaomi/sm8635
-git clone https://github.com/GuidixX/kernel_xiaomi_sm8635-modules.git -b 16.2 kernel/xiaomi/sm8635-modules
-git clone https://github.com/GuidixX/kernel_xiaomi_sm8635-devicetrees.git -b 16.2 kernel/xiaomi/sm8635-devicetrees
+# Private Keys
+git clone https://gitlab.com/Tokito_to/Private_keys.git -b voltage-16 private-keys
+
+# Device Source
+git clone https://github.com/LineageOS/android_device_xiaomi_sm8250-common.git -b lineage-23.2 device/xiaomi/sm8250-common
+git clone https://github.com/LineageOS/android_device_xiaomi_apollon.git -b lineage-23.2 device/xiaomi/apollon
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_sm8250-common.git -b lineage-23.2 vendor/xiaomi/sm8250-common
+git clone https://github.com/TheMuppets/proprietary_vendor_xiaomi_apollon.git -b lineage-22.2 vendor/xiaomi/apollon
+git clone https://github.com/LineageOS/android_kernel_xiaomi_sm8250.git -b lineage-23.2 kernel/xiaomi/sm8250
 
 # Build
 export BUILD_USERNAME=Tokito
@@ -51,8 +52,4 @@ export USE_CCACHE=1 CCACHE_EXEC=$(which ccache)
 [[ ! -z "$CC_DIR" ]] && export CCACHE_DIR="$CC_DIR"
 ccache -M 20G
 
-sudo mount -o remount,size=32G /tmp #increase /tmp space to 32G #to avoid no space in /tmp error
-
-. build/envsetup.sh && brunch voltage_munch-bp2a-user
-
-#prebuilts/jdk/jdk17/linux-x86/bin/java -Xmx2048m -Djava.library.path="out/host/linux-x86/lib64" -jar out/host/linux-x86/framework/signapk.jar  keys/releasekey.x509.pem keys/releasekey.pk8 out/input.apk out/signed.apk
+. build/envsetup.sh && brunch voltage_apollon-bp2a-user

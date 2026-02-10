@@ -1,0 +1,12 @@
+AdServicesApk:com.android.adservices.api
+FederatedCompute:com.android.federatedcompute
+HealthConnectBackupRestore:com.android.health.connect.backuprestore
+HealthConnectController:com.android.healthconnect.controller
+OsuLogin:com.android.hotspot2.osulogin
+SafetyCenterResources:com.android.safetycenter.resources
+ServiceConnectivityResources:com.android.connectivity.resources
+ServiceUwbResources:com.android.uwb.resources
+ServiceWifiResources:com.android.wifi.resources
+WifiDialog:com.android.wifi.dialog
+GmscompatLib:gmscompat_lib
+

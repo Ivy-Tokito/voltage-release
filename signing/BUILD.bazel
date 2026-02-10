@@ -1,0 +1,10 @@
+filegroup(
+    name = "android_certificate_directory",
+    srcs = glob([
+        "apex/*.pk8",
+        "apex/*.pem",
+        "keys/*.pk8",
+        "keys/*.pem",
+    ]),
+    visibility = ["//visibility:public"],
+)
